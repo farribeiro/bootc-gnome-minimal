@@ -35,7 +35,7 @@ FROM quay.io/fedora/fedora-bootc:44
 COPY --from=builder /var/cache/akmods/nvidia/kmod-nvidia*.rpm ./
 
 # Copia os arquivos necessários para o container
-COPY 10-nvidia-args.toml locale.conf post-install.sh pacotes_rpm post-install.service vconsole.conf ./
+COPY 10-nvidia-args.toml locale.conf post-install.sh pacotes_rpm post-install.service vconsole.conf zram-generator.conf ./
 
 # Bloco com a maior parte da configuração do sistema
 RUN <<EOF
@@ -81,6 +81,9 @@ rm -rvf /opt && mkdir -vp /var/opt && ln -vs /var/opt /opt
 echo "Para /usr/local gravavel"
 mkdir -vp /var/usrlocal && mv -v /usr/local/* /var/usrlocal/ 2>/dev/null
 rm -rvf /usr/local && ln -vs /var/usrlocal /usr/local
+
+echo "Configura o zram"
+mv -v zram-generator.con /etc/systemd/
 
 echo "Configura o TTY para o layout de teclado BR, bem como o sistema de locale PT-BR"
 mv -v vconsole.conf /etc/vconsole.conf
